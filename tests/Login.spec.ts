@@ -7,11 +7,17 @@ test('to test login', async ({ page }) => {
 
     const login = new Loginpage(page);
 
-    await page.goto('');
-    await login.loginSteps("test");
+    await page.goto('https://www.google.com');
+    // await login.loginSteps("test");
+    //  await expect(page).toHaveURL("");
+    throwerror();
 
-    await expect(page).toHaveURL("");
 
 
 
 })
+
+function throwerror(): never {
+    throw new Error("Error occured");
+
+}
