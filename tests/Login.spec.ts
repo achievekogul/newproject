@@ -1,17 +1,12 @@
-import { Loginpage } from '../pages/Loginpage'
-import { expect, test } from '@playwright/test'
+import { Loginpage } from '../pages/Loginpage';
+import { test,expect } from '../fixtures/fixtures';
 
 
+test('to test login', async ({ linkFeature , request}) => {
 
-test('to test login', async ({ page }) => {
+    const login = new Loginpage(linkFeature);
 
-    const login = new Loginpage(page);
-
-    await page.goto('https://www.google.com');
-    // await login.loginSteps("test");
-    //  await expect(page).toHaveURL("");
-    throwerror();
-
+       linkFeature.locator('#userna,e')
 
 
 
