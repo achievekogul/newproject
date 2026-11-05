@@ -108,30 +108,77 @@ test('mocking api response', async ({ page, request }) => {
 
 });
 
-test.only('modify headers', async ({ page }) => {
-
+test('modify headers', async ({ page }) => {
 
     const headers = page.route('**/api/v1/fruits', async (route) => {
-
         const request = route.request();
-
         const headers = {
             ...request.headers(),
             'x-custom-header': 'Playwright Automation',
             'x-environment': 'Testing'
         };
-
         await route.continue({ headers: headers });
 
     });
 
     await page.goto('https://demo.playwright.dev/api-mocking');
+    await page.pause();
+    await expect(page.getByText('Apple', {
+        exact: true
+    })).toBeVisible();
+});
+
+
+test('Record HAR', async ({ page }) => {
+    // Replay API requests from HAR.
+    // Either use a matching response from the HAR,
+    // or abort the request if nothing matches.
+    await page.routeFromHAR('./har/fruits.har', {
+        url: '*/**/api/v1/fruits',
+        update: false,
+    });
+
+    const fruitsResponse = page.waitForResponse(response => response.url().includes('/api/v1/fruits')
+    );
+
+    await page.goto('https://demo.playwright.dev/api-mocking');
+
+    const response = await fruitsResponse;
+
+    expect(response.status()).toBe(200);
+});
+
+test('Mock API using HAR', async ({ page }) => {
+
+    await page.routeFromHAR('./har/fruits.har', {
+        url: '**/api/v1/fruits',
+        update: false,
+        notFound: 'abort'
+    });
 
     await page.pause();
+
+    await page.goto('https://demo.playwright.dev/api-mocking');
 
     await expect(page.getByText('Apple', {
         exact: true
     })).toBeVisible();
+});
 
 
+test.only('500', async ({ page }) => {
+
+    await page.route('**/api/v1/checkout', async (route) => {
+
+        // Delays response by 2 seconds to simulate network lag, then returns 500 error
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        await route.fulfill({
+            status: 500,
+            contentType: 'application/json',
+            body: JSON.stringify({ message: 'Internal Payment Processing Error' })
+        });
+    });
+    await page.pause();
+    await page.goto('https://example.com');
 });
