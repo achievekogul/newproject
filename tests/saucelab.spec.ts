@@ -29,9 +29,37 @@ test('login functionality', async ({ page }) => {
     await page.waitForLoadState('networkidle');
     await page.pause();
 
+    page.evaluate(() => {
 
+        window.localStorage.setItem('auth token', ' ');
+        window.localStorage.setItem('userTheme', 'dark');
+
+    });
+
+ Promise.all([
+page.waitForEvent('download')
+
+ ])
     const swag = await page.getByText('Swag Labs').textContent();
     console.log(swag);
 
+    const tear={
+        name:'john',
+        id:20
 
+    }
+
+console.log(tear['name']);
+console.log(Object.keys(tear))
 });
+
+const charcounts: {[key:string]:number}={}
+
+let name: string='test';
+
+for (const char of name){
+    charcounts[char]=(charcounts[char]||0)+1;
+}
+console.log(charcounts);
+
+
