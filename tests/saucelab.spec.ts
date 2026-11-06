@@ -61,5 +61,3 @@ for (const char of name){
     charcounts[char]=(charcounts[char]||0)+1;
 }
 console.log(charcounts);
-
-
